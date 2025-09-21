@@ -1,0 +1,15 @@
+from fastapi import FastAPI
+from app.config import settings
+from app.routes import health_routes
+
+app = FastAPI(
+    title=settings.APP_NAME,
+    version=settings.VERSION,
+    debug=settings.DEBUG,
+    docs_url=settings.DOCS_URL,  
+    redoc_url=settings.REDOCS_URL 
+)
+
+
+app.include_router(health_routes.router, prefix="/health", tags=["Health"])
+
