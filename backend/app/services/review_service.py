@@ -4,6 +4,7 @@ from app.schemas.review_DTO import ReviewCreateDTO
 from app.utils.db_utils import insert_reviews_bulk
 from app.utils.logger import get_logger
 from app.utils.db_utils import dao_to_dto
+from app.utils.db_utils import get_review_by_id
 logger = get_logger(__name__)
 
 class ReviewService:
@@ -17,3 +18,7 @@ class ReviewService:
             reviews_dto.append(review_dto)
         rows_inserted = insert_reviews_bulk(self.db, reviews_dto)
         return rows_inserted
+    
+    def get_review_by_id(self, id:int):
+        return get_review_by_id(self.db,id)
+

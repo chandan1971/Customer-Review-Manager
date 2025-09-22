@@ -13,3 +13,12 @@ class ReviewController:
             return {"rows_inserted": rows_inserted}
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
+        
+    def get_review_by_id(self, id: int):
+        if not isinstance(id, int) or id <= 0:
+            raise HTTPException(status_code=400, detail="Invalid review ID")
+        try:
+            review = self.service.get_review_by_id(id)
+            return {"review": review}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
