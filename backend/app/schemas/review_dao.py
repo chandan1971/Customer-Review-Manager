@@ -2,10 +2,10 @@
 from pydantic import BaseModel
 from datetime import date
 
-class ReviewCreateDTO(BaseModel):
+class ReviewDAO(BaseModel):
     id: int
     location: str
     rating: int
-    review_text: str
-    review_date: date 
+    text: str
+    date: date 
 
