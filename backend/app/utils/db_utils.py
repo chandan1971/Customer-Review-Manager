@@ -46,9 +46,10 @@ def get_review_by_id(db: Session, id: int):
     query = get_review_query(id)
     try:
         result = db.execute(query).mappings().first()  
+        if not result:
+            raise HTTPException(status_code=404, detail=f"Review with ID {id} not found")
     except Exception as e:
         raise e
-    if not result:
-        raise HTTPException(status_code=404, detail=f"Review with ID {id} not found")
+    
     
     return result
