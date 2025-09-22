@@ -1,0 +1,1 @@
+REVIEWS_TABLE = "reviews"
