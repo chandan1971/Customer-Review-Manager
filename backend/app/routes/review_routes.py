@@ -1,6 +1,7 @@
 from fastapi import APIRouter,Depends
 from app.schemas.review_dao import ReviewDAO
 from app.controllers.review_controller import ReviewController
+from app.schemas.review_filter_request_dto import ReviewFilterRequest
 from sqlalchemy.orm import Session
 from app.connections.postgres_db import get_db
 
@@ -15,3 +16,10 @@ def ingest_review(reviews : list[ReviewDAO], db: Session = Depends(get_db)):
 def get_review(id: int, db: Session = Depends(get_db)):
     controller = ReviewController(db)
     return controller.get_review_by_id(id)
+
+@router.get("/", summary="Get Reviews with filters and pagination")
+def get_reviews(filters: ReviewFilterRequest = Depends(),  db: Session = Depends(get_db)):
+    controller = ReviewController(db)
+    return controller.get_reviews(
+       filters
+    )
