@@ -19,6 +19,6 @@ class Sentiment(Enum):
         if self == Sentiment.POSITIVE:
             return "Thanks for your kind words! We're glad you enjoyed your experience."
         elif self == Sentiment.NEGATIVE:
-            return "We’re sorry about your experience. We’ll look into this."
+            return "Thanks for sharing your feedback.We’re sorry about your experience. We’ll look into this."
         else:
             return "Thanks for sharing your feedback."
