@@ -31,3 +31,10 @@ class ReviewController:
             raise HTTPException(status_code=400, detail="Page size must be between 1 and 100")
         
         return self.service.get_reviews(filters)
+    
+    def suggest_reply(self, review_id: int, db):
+        service = ReviewService(db)
+        review = service.get_review_by_id(review_id)
+        if not review:
+            raise HTTPException(status_code=404, detail="Review not found")
+        return service.suggest_reply(review)

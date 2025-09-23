@@ -1,1 +1,0 @@
-REVIEWS_TABLE = "reviews"

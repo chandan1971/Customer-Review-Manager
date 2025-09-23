@@ -4,6 +4,7 @@ from app.controllers.review_controller import ReviewController
 from app.schemas.review_filter_request_dto import ReviewFilterRequest
 from sqlalchemy.orm import Session
 from app.connections.postgres_db import get_db
+from app.schemas.review_reply_dto import ReviewReplyResponse
 
 router = APIRouter()
 
@@ -23,3 +24,8 @@ def get_reviews(filters: ReviewFilterRequest = Depends(),  db: Session = Depends
     return controller.get_reviews(
        filters
     )
+
+@router.get("/{id}/suggest-reply", response_model=ReviewReplyResponse)
+def suggest_reply(id: int, db: Session = Depends(get_db)):
+    controller = ReviewController(db)
+    return controller.suggest_reply(id, db)
