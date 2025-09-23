@@ -9,3 +9,5 @@ transformers==4.44.2
 huggingface-hub==0.24.6
 torch
 nltk==3.8.1
+scikit-learn
+numpy

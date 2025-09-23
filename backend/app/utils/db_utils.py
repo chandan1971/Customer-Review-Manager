@@ -67,3 +67,7 @@ def fetch_topic_sentiment_counts(db: Session):
     except Exception as e:
         logger.error("Failed to fetch topic-sentiment counts", exc_info=True)
         raise HTTPException(status_code=500, detail="Error fetching analytics")
+    
+def get_all_reviews_texts(db: Session):
+    result = db.execute(text("SELECT id, review_text FROM reviews")).mappings().all()
+    return result
