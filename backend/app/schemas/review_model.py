@@ -10,3 +10,5 @@ class ReviewModel(Base):
     rating = Column(Integer, nullable=False)
     review_text = Column(String, nullable=False)
     review_date = Column(Date, nullable=False)
+    sentiment = Column(String, nullable=False)   
+    topics = Column(String, nullable=True) 

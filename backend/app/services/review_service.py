@@ -1,16 +1,17 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from fastapi import HTTPException
-from transformers import pipeline
 from app.schemas.review_dao import ReviewDAO
 from app.schemas.review_DTO import ReviewCreateDTO
 from app.schemas.review_model import ReviewModel
 from app.schemas.review_filter_request_dto import ReviewFilterRequest
 from app.schemas.review_reply_dto import ReviewReplyResponse
-from app.constants.sentiment_enum import Sentiment
+from app.constants.sentiment_constants import Sentiment
 from app.utils.db_utils import insert_reviews_bulk, dao_to_dto, get_review_by_id
 from app.utils.filter_util import normalize_filter
 from app.utils.logger import get_logger
+from app.utils.analytics_util import get_review_sentiment,extract_topics
+import json
 
 logger = get_logger(__name__)
 
@@ -19,17 +20,25 @@ class ReviewService:
         self.db = db
 
     def ingest_reviews(self, reviews: list[ReviewDAO]) -> int:
-        try:
-            reviews_dto: list[ReviewCreateDTO] = [dao_to_dto(r) for r in reviews]
+        try:  
+            reviews_dto: list[ReviewCreateDTO] = []
+            for review in reviews:
+                review_text = review.text
+                sentiment = get_review_sentiment(review_text)
+                topics = extract_topics(review_text)
+                strigified_topics = json.dumps(topics)
+                review_dto: ReviewCreateDTO = dao_to_dto(review, sentiment, strigified_topics)
+                reviews_dto.append(review_dto)
+
             rows_inserted = insert_reviews_bulk(self.db, reviews_dto)
             return rows_inserted
         except Exception as e:
             logger.error("Failed to ingest reviews", exc_info=e)
             raise HTTPException(status_code=500, detail="Failed to ingest reviews")
 
-    def get_review_by_id(self, id: int):
+    def get_review_by_id(self, id: int)-> ReviewModel:
         try:
-            review = get_review_by_id(self.db, id)
+            review:ReviewModel = get_review_by_id(self.db, id)
             return review
         except HTTPException:
             raise 
@@ -67,11 +76,9 @@ class ReviewService:
             logger.error("Failed to fetch reviews with filters", exc_info=e)
             raise HTTPException(status_code=500, detail="Failed to fetch reviews")
 
-    def suggest_reply(self, review):
+    def suggest_reply(self, review: ReviewModel):
         try:
-            review_text = review.review_text
-            sentiment_pipe = pipeline("sentiment-analysis")
-            sentiment_label = sentiment_pipe(review_text)[0]["label"]
+            sentiment_label = review.sentiment
             sentiment_enum = Sentiment[sentiment_label]
             reply = sentiment_enum.default_reply()
 
