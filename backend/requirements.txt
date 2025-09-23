@@ -8,3 +8,4 @@ pg8000==1.28.3
 transformers==4.44.2
 huggingface-hub==0.24.6
 torch
+nltk==3.8.1

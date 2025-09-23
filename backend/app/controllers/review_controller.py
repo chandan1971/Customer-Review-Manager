@@ -3,6 +3,7 @@ from fastapi import HTTPException
 from app.schemas.review_dao import ReviewDAO
 from app.services.review_service import ReviewService
 from app.schemas.review_filter_request_dto import ReviewFilterRequest
+from app.schemas.review_model import ReviewModel
 
 class ReviewController:
     def __init__(self, db: Session):
@@ -34,7 +35,7 @@ class ReviewController:
     
     def suggest_reply(self, review_id: int, db):
         service = ReviewService(db)
-        review = service.get_review_by_id(review_id)
+        review: ReviewModel = service.get_review_by_id(review_id)
         if not review:
             raise HTTPException(status_code=404, detail="Review not found")
         return service.suggest_reply(review)

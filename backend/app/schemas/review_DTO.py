@@ -8,4 +8,6 @@ class ReviewCreateDTO(BaseModel):
     rating: int
     review_text: str
     review_date: date 
+    sentiment: str | None = None
+    topics: str | None = None
 
