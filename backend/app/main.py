@@ -6,7 +6,7 @@ from app.routes import analytics_routes, health_routes,review_routes,search_rout
 origins = [
     "http://localhost:5173",  
     "http://127.0.0.1:5173",
-    "https://peaceful-pudding-7ab335.netlify.app/reviews"
+    "https://peaceful-pudding-7ab335.netlify.app"
 ]
 
 app = FastAPI(
