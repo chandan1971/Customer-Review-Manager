@@ -25,7 +25,7 @@ class SearchService:
 
         top_reviews = []
         for idx in top_indices:
-            if(similarities[idx]>=0.7):
+            if(similarities[idx]>=0.1):
                 top_reviews.append({
                     "id": review_ids[idx],
                     "review_text": review_texts[idx],
