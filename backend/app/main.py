@@ -1,6 +1,12 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.routes import analytics_routes, health_routes,review_routes,search_routes
+
+origins = [
+    "http://localhost:5173",  
+    "http://127.0.0.1:5173",
+]
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -8,6 +14,14 @@ app = FastAPI(
     debug=settings.DEBUG,
     docs_url=settings.DOCS_URL,  
     redoc_url=settings.REDOCS_URL 
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins, 
+    allow_credentials=True,
+    allow_methods=["*"],     
+    allow_headers=["*"],     
 )
 
 
