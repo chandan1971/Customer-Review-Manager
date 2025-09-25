@@ -50,4 +50,5 @@ out/
 .eslintcache
 
 # Optional REP
+.env
 
