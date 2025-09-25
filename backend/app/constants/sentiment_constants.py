@@ -15,7 +15,7 @@ class Sentiment(Enum):
     NEGATIVE = "NEGATIVE"
     NEUTRAL = "NEUTRAL"
 
-    def format_topics(topics: list[str]) -> str:
+    def format_topics(self,topics: list[str]) -> str:
         if not topics:
             return ""
         if len(topics) == 1:
