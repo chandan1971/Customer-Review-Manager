@@ -79,8 +79,9 @@ class ReviewService:
     def suggest_reply(self, review: ReviewModel):
         try:
             sentiment_label = review.sentiment
+            topics = json.loads(review.topics)
             sentiment_enum = Sentiment[sentiment_label]
-            reply = sentiment_enum.default_reply()
+            reply = sentiment_enum.default_reply(topics)
 
             return ReviewReplyResponse(
                 reply=reply,
