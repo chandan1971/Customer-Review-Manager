@@ -107,13 +107,6 @@ export default function ReviewsPage() {
           value={filters.q}
           onChange={(e) => setFilters({ ...filters, q: e.target.value })}
         />
-        <input
-          type="number"
-          placeholder="Page size"
-          className="border p-1 rounded"
-          value={filters.page_size}
-          onChange={(e) => setFilters({ ...filters, page_size: Number(e.target.value) || 5 })}
-        />
         <button
           className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
           onClick={loadReviews}

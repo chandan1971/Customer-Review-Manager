@@ -56,7 +56,7 @@ class ReviewService:
             if location:
                 query = query.filter(ReviewModel.location.ilike(f"%{location}%"))
             if sentiment:
-                query = query.filter(ReviewModel.review_text.ilike(f"%{sentiment}%"))
+                query = query.filter(ReviewModel.sentiment.ilike(f"%{sentiment}%"))
             if q:
                 or_filters = [ReviewModel.review_text.ilike(f"%{q}%"),
                               ReviewModel.location.ilike(f"%{q}%")]
