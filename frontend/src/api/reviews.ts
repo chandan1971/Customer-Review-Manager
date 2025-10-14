@@ -19,7 +19,6 @@ export type ReviewFilter = {
 };
 
  export type newReviews= {
-    id: number | null;
     location: string;
     rating: number;
     text: string;
@@ -48,11 +47,7 @@ export async function fetchReviewById(id: number): Promise<Review> {
 }
 
 export async function ingestReviews(reviews: newReviews[]): Promise<{ rows_inserted: number }> {
-  reviews.forEach((r) => {
-    if (!Number.isInteger(r.id)) {
-      throw new Error(`Invalid review id: ${r.id}. ID must be an integer.`);
-    }
-  });
+  
 
   const res = await api.post("/reviews/ingest", reviews);
   return res.data;

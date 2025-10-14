@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import {
   fetchReviews,
   ingestReviews,
@@ -11,7 +11,7 @@ export default function ReviewsPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [reply, setReply] = useState<string | null>(null);
+  const [replies, setReplies] = useState<Record<number, string>>({});
 
   // Filters
   const [filters, setFilters] = useState<ReviewFilter>({
@@ -21,6 +21,10 @@ export default function ReviewsPage() {
     page: 1,
     page_size: 5,
   });
+
+  useEffect(() => {
+    loadReviews();
+  }, [filters]); 
 
   // Form state for adding multiple reviews
   const [newReviews, setNewReviews] = useState<
@@ -45,7 +49,7 @@ export default function ReviewsPage() {
     setError(null);
     try {
       const res = await suggestReply(id);
-      setReply(res.reply);
+      setReplies((prev) => ({ ...prev, [id]: res.reply }));
     } catch {
       setError("Failed to suggest reply");
     }
@@ -56,7 +60,6 @@ export default function ReviewsPage() {
 
     // Validate each review
     for (const r of newReviews) {
-      if (r.id === null || !Number.isInteger(r.id)) return setError("Each review must have an integer ID");
       if (!r.location.trim()) return setError("All reviews must have a location");
       if (r.rating < 1 || r.rating > 5) return setError("All reviews must have rating 1-5");
       if (!r.text.trim()) return setError("All reviews must have review text");
@@ -73,7 +76,7 @@ export default function ReviewsPage() {
     }
   };
 
-  const totalPages = 10; // Replace with real total pages from API if available
+  const totalPages = 10; 
 
   return (
     <div className="p-4 max-w-6xl mx-auto">
@@ -120,17 +123,7 @@ export default function ReviewsPage() {
         <h2 className="text-xl font-semibold mb-2">Add Reviews</h2>
         {newReviews.map((review, idx) => (
           <div key={idx} className="flex flex-col gap-2 mb-2 p-2 border rounded">
-            <input
-              type="number"
-              placeholder="ID (integer)"
-              className="border p-1 rounded"
-              value={review.id ?? ""}
-              onChange={(e) =>
-                setNewReviews((prev) =>
-                  prev.map((r, i) => (i === idx ? { ...r, id: Number(e.target.value) } : r))
-                )
-              }
-            />
+            
             <input
               type="text"
               placeholder="Location"
@@ -201,26 +194,33 @@ export default function ReviewsPage() {
       {/* Reviews List */}
       <div className="grid gap-3">
         {reviews.map((r) => (
-          <div key={r.id} className="p-3 bg-white rounded shadow cursor-pointer hover:bg-slate-50">
-            <div className="flex justify-between items-center">
-              <div className="text-xs text-slate-500">ID: {r.id}</div>
-              <button
-                className="px-2 py-0.5 bg-purple-600 text-white rounded text-xs hover:bg-purple-700"
-                onClick={() => handleSuggestReply(r.id)}
-              >
-                Suggest Reply
-              </button>
-            </div>
-            <div className="text-sm text-slate-500">{r.location} • Rating: {r.rating}</div>
-            <div className="mt-1">{r.review_text}</div>
-            <div className="mt-2 text-xs text-slate-400">Sentiment: {r.sentiment ?? "N/A"}</div>
-            {r.topics && (
-              <div className="text-xs text-slate-400">
-                Topics: {JSON.parse(r.topics).join(", ")}
-              </div>
-            )}
-          </div>
-        ))}
+  <div key={r.id} className="p-3 bg-white rounded shadow cursor-pointer hover:bg-slate-50">
+    <div className="flex justify-between items-center">
+      <div className="text-xs text-slate-500">ID: {r.id}</div>
+      <button
+        className="px-2 py-0.5 bg-purple-600 text-white rounded text-xs hover:bg-purple-700"
+        onClick={() => handleSuggestReply(r.id)}
+      >
+        Suggest Reply
+      </button>
+    </div>
+    <div className="text-sm text-slate-500">{r.location} • Rating: {r.rating}</div>
+    <div className="mt-1">{r.review_text}</div>
+    <div className="mt-2 text-xs text-slate-400">Sentiment: {r.sentiment ?? "N/A"}</div>
+    {r.topics && (
+      <div className="text-xs text-slate-400">
+        Topics: {JSON.parse(r.topics).join(", ")}
+      </div>
+    )}
+
+    {/* Suggested Reply */}
+    {replies[r.id] && (
+      <div className="mt-2 p-2 bg-gray-50 border rounded text-sm">
+        <strong>Suggested Reply:</strong> {replies[r.id]}
+      </div>
+    )}
+  </div>
+))}
       </div>
 
       {/* Pagination */}
@@ -240,20 +240,10 @@ export default function ReviewsPage() {
         >
           Next
         </button>
-        <button
-          className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-          onClick={loadReviews}
-        >
-          Go
-        </button>
       </div>
 
       {/* Suggested Reply */}
-      {reply && (
-        <div className="mt-4 p-2 bg-white border rounded shadow max-w-lg">
-          <strong>Suggested Reply:</strong> {reply}
-        </div>
-      )}
+      
     </div>
   );
 }

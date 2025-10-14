@@ -3,7 +3,6 @@ from pydantic import BaseModel
 from datetime import date
 
 class ReviewCreateDTO(BaseModel):
-    id: int
     location: str
     rating: int
     review_text: str

@@ -11,7 +11,6 @@ logger = get_logger(__name__)
 
 def dao_to_dto(dao: ReviewDAO, sentiment: str, topics: str) -> ReviewCreateDTO:
     return ReviewCreateDTO(
-        id=dao.id,
         location=dao.location,
         rating=dao.rating,
         review_text=dao.text,

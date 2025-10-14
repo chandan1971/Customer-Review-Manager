@@ -3,7 +3,6 @@ from pydantic import BaseModel
 from datetime import date
 
 class ReviewDAO(BaseModel):
-    id: int
     location: str
     rating: int
     text: str
